@@ -16,15 +16,13 @@ func _ready():
     get_tree().connect('network_peer_disconnected', self, '_on_player_disconnected')
     get_tree().connect('network_peer_connected', self, '_on_player_connected')
 
-func create_server(player_nickname):
-    self_data.name = player_nickname
+func create_server():
     players[1] = self_data
     var peer = NetworkedMultiplayerENet.new()
     peer.create_server(DEFAULT_PORT, MAX_PLAYERS)
     get_tree().set_network_peer(peer)
 
-func connect_to_server(player_nickname):
-    self_data.name = player_nickname
+func connect_to_server():
     get_tree().connect('connected_to_server', self, '_connected_to_server')
     var peer = NetworkedMultiplayerENet.new()
     peer.create_client(DEFAULT_IP, DEFAULT_PORT)
@@ -60,7 +58,7 @@ remote func _send_player_info(id, info):
     new_player.name = str(id)
     new_player.set_network_master(id)
     $'/root/Game/'.add_child(new_player)
-    new_player.init(info.name, info.position, true)
+    new_player.start(info.position)
 
 func update_position(id, position):
     players[id].position = position
